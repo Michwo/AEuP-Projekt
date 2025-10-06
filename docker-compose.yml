@@ -1,0 +1,34 @@
+services:
+  node:
+    image: node:18
+    container_name: node_app
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "npm install && npm start"
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+  mysql: 
+    image: mysql:8
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./images:/images
+    networks:
+      - app-network
+volumes:
+  # No named volumes needed, using local directories for persistence
+networks:
+  app-network:
+    driver: bridge  
